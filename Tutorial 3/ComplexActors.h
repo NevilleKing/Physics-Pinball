@@ -32,8 +32,8 @@ namespace PhysicsEngine
 
 			// Inside walls in enclosure
 			// Right 'plunger' wall
-			CreateShape(PxBoxGeometry(PxVec3(thickness, dimensions.y - thickness, dimensions.z)));
-			GetShape(5)->setLocalPose(PxTransform(PxVec3(-dimensions.x, 0, 0)));
+			CreateShape(PxBoxGeometry(PxVec3(thickness, (dimensions.y - thickness) / 1.75f, dimensions.z)));
+			GetShape(5)->setLocalPose(PxTransform(PxVec3(dimensions.x - (dimensions.x / 10), -dimensions.y / 2.35f, 0)));
 		}
 	};
 }
