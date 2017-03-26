@@ -28,7 +28,7 @@ namespace PhysicsEngine
 
 			// create the bottom of the enclosure
 			CreateShape(PxBoxGeometry(PxVec3(dimensions.x + thickness, dimensions.y + thickness, dimensions.z)), 1.f);
-			GetShape(4)->setLocalPose(PxTransform(PxVec3(0, 0, -thickness)));
+			GetShape(4)->setLocalPose(PxTransform(PxVec3(0, 0, -dimensions.z*2)));
 		}
 	};
 }

@@ -221,7 +221,7 @@ namespace PhysicsEngine
 			Add(plane);
 
 			// Pinball Enclosure --------------------------
-			enclosure = new PinballEnclosure(PxTransform(PxVec3(0.f, 6.4f, -3.3f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f))), PxVec3(10.f, 20.f, .5f), .5f);
+			enclosure = new PinballEnclosure(PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f))), PxVec3(10.f, 20.f, .5f), .1f);
 			enclosure->Color(color_palette[2], 4);
 			Add(enclosure);
 		}
