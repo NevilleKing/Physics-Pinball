@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicActors.h"
+#include "ComplexActors.h"
 #include <iostream>
 #include <iomanip>
 
@@ -184,22 +185,9 @@ namespace PhysicsEngine
 	class MyScene : public Scene
 	{
 		Plane* plane;
-		Box* box, * box2;
 		MySimulationEventCallback* my_callback;
-		RevoluteJoint* joint;
 
-		Trampoline* trampoline;
-
-		Box* boxTrigger;
-
-		Sphere* ball;
-
-		Box* filterBox1;
-		Box* filterBox2;
-
-		bool motorLeft = true;
-
-		int touches = 0;
+		PinballEnclosure* enclosure;
 		
 	public:
 		//specify your custom filter shader here
@@ -232,96 +220,17 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f / 255.f, 210.f / 255.f, 210.f / 255.f));
 			Add(plane);
 
-			//box = new Box(PxTransform(PxVec3(-2.f,10,.0f)), PxVec3(.5f), 5.f);
-			//box->Color(color_palette[0]);
-			box2 = new Box(PxTransform(PxVec3(-2.f, 20, .0f)), PxVec3(.5f), 5.f);
-			box2->Color(color_palette[0]);
-			//set collision filter flags
-			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
-			//use | operator to combine more actors e.g.
-			// box->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1 | FilterGroup::ACTOR2);
-			//don't forget to set your flags for the matching actor as well, e.g.:
-			// box2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-			//box->Name("Box1");
-			box2->Name("Box2");
-			//Add(box);
-			((PxActor*)box2->Get())->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-			Add(box2);
-
-			trampoline = new Trampoline(PxVec3(1.f, 2.f, 1.f), 50.f, 0.f);
-			trampoline->AddToScene(this);
-
-			//joint two boxes together
-			//the joint is fixed to the centre of the first box, oriented by 90 degrees around the Y axis
-			//and has the second object attached 5 meters away along the Y axis from the first object.
-			joint = new RevoluteJoint(box, PxTransform(PxVec3(-2.f, 10.f, 0.f), PxQuat(PxPi / 2, PxVec3(0.f, 1.f, 0.f))), box2, PxTransform(PxVec3(0.f, 5.f, 0.f)));
-			joint->Get()->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
-			joint->DriveVelocity(1.f);
-			joint->SetLimits(-PxPi / 6, PxPi / 6);
-
-			// Trigger
-			boxTrigger = new Box(PxTransform(PxVec3(-10, .0f, .0f)), PxVec3(1.0f));
-			boxTrigger->SetTrigger(true);
-			boxTrigger->SetKinematic(true);
-			Add(boxTrigger);
-
-			ball = new Sphere(PxTransform(PxVec3(-20, 0, 0)));
-			Add(ball);
-
-			// Custom filter shader test
-			filterBox1 = new Box(PxTransform(PxVec3(5, 0, -10)));
-			filterBox2 = new Box(PxTransform(PxVec3(-5, 0, -10)));
-			filterBox1->SetupFiltering(FilterGroup::ACTOR0, FilterGroup::ACTOR1);
-			filterBox2->SetupFiltering(FilterGroup::ACTOR1, FilterGroup::ACTOR0);
-			filterBox1->Name("FilterBox1");
-			((PxRigidBody*)filterBox1->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
-			filterBox2->Name("FilterBox2");
-			Add(filterBox1);
-			Add(filterBox2);
+			// Pinball Enclosure --------------------------
+			enclosure = new PinballEnclosure(PxTransform(PxVec3(0.f, 10.f, 0.f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f))), PxVec3(10.f, 20.f, .5f), .5f);
+			enclosure->Color(color_palette[2], 4);
+			Add(enclosure);
 		}
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-			if (my_callback->trigger)
-			{
-				my_callback->trigger = false;
-				touches++;
-				px_scene->removeActor(*(PxActor*)ball->Get());
-			}
-
-			cout << "Touches " << touches << endl;
+			
 		}
 
-		/// An example use of key release handling
-		void ExampleKeyReleaseHandler()
-		{
-			cerr << "I am realeased!" << endl;
-		}
-
-		/// An example use of key presse handling
-		void ExampleKeyPressHandler()
-		{
-			cerr << "I am pressed!" << endl;
-		}
-
-		void HandleMotorReverse()
-		{
-			if (motorLeft)
-			{
-				joint->DriveVelocity(-1.f);
-				motorLeft = false;
-			}
-			else
-			{
-				joint->DriveVelocity(1.f);
-				motorLeft = true;
-			}
-		}
-
-		void AddSideForce()
-		{
-			((PxRigidBody*)filterBox1->Get())->addForce(PxVec3(-10000.f, 0.f, 0.f));
-		}
 	};
 }

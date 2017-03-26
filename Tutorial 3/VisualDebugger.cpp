@@ -174,15 +174,6 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 		//implement your own
-		case 'R':
-			scene->ExampleKeyPressHandler();
-			break;
-		case 'M':
-			scene->HandleMotorReverse();
-			break;
-		case 'F':
-			scene->AddSideForce();
-			break;
 		default:
 			break;
 		}
@@ -193,9 +184,6 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 		//implement your own
-		case 'R':
-			scene->ExampleKeyReleaseHandler();
-			break;
 		default:
 			break;
 		}
