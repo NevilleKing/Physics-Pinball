@@ -19,11 +19,11 @@ namespace PhysicsEngine
 	//vertices have to be specified in a counter-clockwise order to assure the correct shading in rendering
 	static PxU32 pyramid_trigs[] = {1, 4, 0, 3, 1, 0, 2, 3, 0, 4, 2, 0, 3, 2, 1, 2, 4, 1};
 
-	class Pyramid : public ConvexMesh
+	class Pyramid : public ConvexMesh<DynamicActor>
 	{
 	public:
 		Pyramid(PxTransform pose=PxTransform(PxIdentity), PxReal density=1.f) :
-			ConvexMesh(vector<PxVec3>(begin(pyramid_verts),end(pyramid_verts)), pose, density)
+			ConvexMesh<DynamicActor>(vector<PxVec3>(begin(pyramid_verts),end(pyramid_verts)), pose, density)
 		{
 		}
 	};
@@ -223,7 +223,7 @@ namespace PhysicsEngine
 			// Pinball Enclosure --------------------------
 			enclosure = new PinballEnclosure(PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f))), PxVec3(10.f, 20.f, .5f), .1f);
 			enclosure->Color(color_palette[2], 4);
-			Add(enclosure);
+			enclosure->AddToScene(this);
 		}
 
 		//Custom udpate function

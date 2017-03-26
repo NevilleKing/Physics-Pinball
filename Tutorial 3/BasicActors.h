@@ -59,12 +59,13 @@ namespace PhysicsEngine
 	};
 
 	///The ConvexMesh class
-	class ConvexMesh : public DynamicActor
+	template <class T>
+	class ConvexMesh : public T
 	{
 	public:
 		//constructor
 		ConvexMesh(const std::vector<PxVec3>& verts, const PxTransform& pose=PxTransform(PxIdentity), PxReal density=1.f)
-			: DynamicActor(pose)
+			: T(pose)
 		{
 			PxConvexMeshDesc mesh_desc;
 			mesh_desc.points.count = (PxU32)verts.size();
