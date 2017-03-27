@@ -34,6 +34,13 @@ namespace PhysicsEngine
 			// Right 'plunger' wall
 			CreateShape(PxBoxGeometry(PxVec3(thickness, (dimensions.y - thickness) / 1.75f, dimensions.z)));
 			GetShape(5)->setLocalPose(PxTransform(PxVec3(dimensions.x - (dimensions.x / 10), -dimensions.y / 2.35f, 0)));
+
+			// Add bottom walls next to bumpers
+			CreateShape(PxBoxGeometry(PxVec3(dimensions.x / 3, thickness, dimensions.z)));
+			GetShape(6)->setLocalPose(PxTransform(PxVec3(-dimensions.x + (dimensions.x / 3.55f), -dimensions.y + (dimensions.y / 3), 0), PxQuat(-PxPi / 6, PxVec3(0, 0, 1))));
+
+			CreateShape(PxBoxGeometry(PxVec3(dimensions.x / 3, thickness, dimensions.z)));
+			GetShape(7)->setLocalPose(PxTransform(PxVec3(dimensions.x - (dimensions.x / 2.55f), -dimensions.y + (dimensions.y / 3), 0), PxQuat(PxPi / 6, PxVec3(0, 0, 1))));
 		}
 	};
 
