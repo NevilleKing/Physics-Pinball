@@ -55,20 +55,15 @@ namespace PhysicsEngine
 
 			// Add top right entry thing
 			std::vector<PxVec3> topRightVerts {
-				//Start
-				PxVec3(dimensions.x - (dimensions.x / 10) - thickness, dimensions.y / 7.2f, 0),
-				PxVec3(dimensions.x - (dimensions.x / 10) + thickness, dimensions.y / 7.2f, 0),
-				PxVec3(dimensions.x / 4, dimensions.y - (dimensions.y / 10), 0),
-				PxVec3((dimensions.x / 4) + thickness * 2, dimensions.y - (dimensions.y / 10), 0),
-
-				// End
-				PxVec3(dimensions.x - (dimensions.x / 10) - thickness, dimensions.y / 7.2f, -1),
-				PxVec3(dimensions.x - (dimensions.x / 10) + thickness, dimensions.y / 7.2f, -1),
-				PxVec3(dimensions.x / 4, dimensions.y - (dimensions.y / 10), -1),
-				PxVec3((dimensions.x / 4) + thickness * 2, dimensions.y - (dimensions.y / 10), -1),
+				PxVec3(dimensions.x - thickness, dimensions.y - thickness, dimensions.z), // top left
+				PxVec3(dimensions.x - thickness, (dimensions.y - thickness) - (dimensions.y / 6), dimensions.z), // right
+				PxVec3((dimensions.x - thickness) - (dimensions.x / 4), dimensions.y - thickness, dimensions.z), // top
+				PxVec3(dimensions.x - thickness, dimensions.y - thickness, -dimensions.z), // top left
+				PxVec3(dimensions.x - thickness, (dimensions.y - thickness) - (dimensions.y / 6), -dimensions.z), // right
+				PxVec3((dimensions.x - thickness) - (dimensions.x / 4), dimensions.y - thickness, -dimensions.z) // top
 			};
 
-			_topRightEntry = new ConvexMesh<StaticActor>(topRightVerts, pose);
+			_topRightEntry = new ConvexMesh<StaticActor>(vector<PxVec3>(begin(topRightVerts), end(topRightVerts)), pose);
 		}
 
 		~PinballEnclosure()
