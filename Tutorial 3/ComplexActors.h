@@ -128,4 +128,17 @@ namespace PhysicsEngine
 				delete springs[i];
 		}
 	};
+
+	class Paddle : public ConvexMesh<DynamicActor>
+	{
+	public:
+		Paddle(PxTransform pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(2.0f, 1.0f, 1.0f), PxReal density = 1.f)
+			:ConvexMesh<DynamicActor>(pose, density)
+		{
+			PxVec3 wedge_verts[] = { PxVec3(dimensions.x, 0.f, -dimensions.z/2), PxVec3(0.f, -dimensions.y/2, -dimensions.z / 2), PxVec3(0.f, dimensions.y/2, -dimensions.z / 2),
+									 PxVec3(dimensions.x, 0.f, dimensions.z / 2), PxVec3(0.f, -dimensions.y/2, dimensions.z / 2), PxVec3(0.f, dimensions.y/2, dimensions.z / 2) };
+
+			ConvexMesh<DynamicActor>::AddVerts(vector<PxVec3>(std::begin(wedge_verts), end(wedge_verts)));
+		}
+	};
 }

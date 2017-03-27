@@ -126,6 +126,8 @@ namespace PhysicsEngine
 		MySimulationEventCallback* my_callback;
 
 		PinballEnclosure* enclosure;
+
+		Paddle* paddles[2];
 		
 	public:
 		//specify your custom filter shader here
@@ -159,9 +161,15 @@ namespace PhysicsEngine
 			Add(plane);
 
 			// Pinball Enclosure --------------------------
-			enclosure = new PinballEnclosure(PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f))), PxVec3(10.f, 20.f, .5f), .1f);
+			PxTransform encPose = PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f)));
+			enclosure = new PinballEnclosure(encPose, PxVec3(10.f, 20.f, .5f), .1f);
 			enclosure->Color(color_palette[2], 4);
 			enclosure->AddToScene(this);
+
+			// Paddles ------------------------------------
+			paddles[0] = new Paddle(encPose);
+			paddles[0]->SetKinematic(true);
+			Add(paddles[0]);
 		}
 
 		//Custom udpate function
