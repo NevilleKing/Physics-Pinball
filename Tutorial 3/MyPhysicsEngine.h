@@ -13,30 +13,6 @@ namespace PhysicsEngine
 	static const PxVec3 color_palette[] = {PxVec3(46.f/255.f,9.f/255.f,39.f/255.f),PxVec3(217.f/255.f,0.f/255.f,0.f/255.f),
 		PxVec3(255.f/255.f,45.f/255.f,0.f/255.f),PxVec3(255.f/255.f,140.f/255.f,54.f/255.f),PxVec3(4.f/255.f,117.f/255.f,111.f/255.f)};
 
-	//pyramid vertices
-	static PxVec3 pyramid_verts[] = {PxVec3(0,1,0), PxVec3(1,0,0), PxVec3(-1,0,0), PxVec3(0,0,1), PxVec3(0,0,-1)};
-	//pyramid triangles: a list of three vertices for each triangle e.g. the first triangle consists of vertices 1, 4 and 0
-	//vertices have to be specified in a counter-clockwise order to assure the correct shading in rendering
-	static PxU32 pyramid_trigs[] = {1, 4, 0, 3, 1, 0, 2, 3, 0, 4, 2, 0, 3, 2, 1, 2, 4, 1};
-
-	class Pyramid : public ConvexMesh<DynamicActor>
-	{
-	public:
-		Pyramid(PxTransform pose=PxTransform(PxIdentity), PxReal density=1.f) :
-			ConvexMesh<DynamicActor>(vector<PxVec3>(begin(pyramid_verts),end(pyramid_verts)), pose, density)
-		{
-		}
-	};
-
-	class PyramidStatic : public TriangleMesh
-	{
-	public:
-		PyramidStatic(PxTransform pose=PxTransform(PxIdentity)) :
-			TriangleMesh(vector<PxVec3>(begin(pyramid_verts),end(pyramid_verts)), vector<PxU32>(begin(pyramid_trigs),end(pyramid_trigs)), pose)
-		{
-		}
-	};
-
 	struct FilterGroup
 	{
 		enum Enum
@@ -46,44 +22,6 @@ namespace PhysicsEngine
 			ACTOR2		= (1 << 2)
 			//add more if you need
 		};
-	};
-
-	///An example class showing the use of springs (distance joints).
-	class Trampoline
-	{
-		vector<DistanceJoint*> springs;
-		Box *bottom, *top;
-
-	public:
-		Trampoline(const PxVec3& dimensions=PxVec3(1.f,1.f,1.f), PxReal stiffness=1.f, PxReal damping=1.f)
-		{
-			PxReal thickness = .1f;
-			bottom = new Box(PxTransform(PxVec3(0.f,thickness,0.f)),PxVec3(dimensions.x,thickness,dimensions.z));
-			top = new Box(PxTransform(PxVec3(0.f,dimensions.y+thickness,0.f)),PxVec3(dimensions.x,thickness,dimensions.z));
-			springs.resize(4);
-			springs[0] = new DistanceJoint(bottom, PxTransform(PxVec3(dimensions.x,thickness,dimensions.z)), top, PxTransform(PxVec3(dimensions.x,-dimensions.y,dimensions.z)));
-			springs[1] = new DistanceJoint(bottom, PxTransform(PxVec3(dimensions.x,thickness,-dimensions.z)), top, PxTransform(PxVec3(dimensions.x,-dimensions.y,-dimensions.z)));
-			springs[2] = new DistanceJoint(bottom, PxTransform(PxVec3(-dimensions.x,thickness,dimensions.z)), top, PxTransform(PxVec3(-dimensions.x,-dimensions.y,dimensions.z)));
-			springs[3] = new DistanceJoint(bottom, PxTransform(PxVec3(-dimensions.x,thickness,-dimensions.z)), top, PxTransform(PxVec3(-dimensions.x,-dimensions.y,-dimensions.z)));
-
-			for (unsigned int i = 0; i < springs.size(); i++)
-			{
-				springs[i]->Stiffness(stiffness);
-				springs[i]->Damping(damping);
-			}
-		}
-
-		void AddToScene(Scene* scene)
-		{
-			scene->Add(bottom);
-			scene->Add(top);
-		}
-
-		~Trampoline()
-		{
-			for (unsigned int i = 0; i < springs.size(); i++)
-				delete springs[i];
-		}
 	};
 
 	///A customised collision class, implemneting various callbacks
