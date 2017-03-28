@@ -170,12 +170,12 @@ namespace PhysicsEngine
 			// Paddles ------------------------------------
 			// Left
 			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f));
-			paddles[0]->SetKinematic(true);
+			//paddles[0]->SetKinematic(true);
 			Add(paddles[0]);
 
 			// Right
 			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f));
-			paddles[1]->SetKinematic(true);
+			//paddles[1]->SetKinematic(true);
 			Add(paddles[1]);
 		}
 

@@ -140,6 +140,9 @@ namespace PhysicsEngine
 
 	class Paddle : public ConvexMesh<DynamicActor>
 	{
+	private:
+		RevoluteJoint* joint;
+
 	public:
 		Paddle(PxTransform pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(2.0f, 1.0f, 1.0f), PxReal density = 1.f)
 			:ConvexMesh<DynamicActor>(pose, density)
@@ -148,6 +151,14 @@ namespace PhysicsEngine
 									 PxVec3(dimensions.x, 0.f, dimensions.z / 2), PxVec3(0.f, -dimensions.y/2, dimensions.z / 2), PxVec3(0.f, dimensions.y/2, dimensions.z / 2) };
 
 			ConvexMesh<DynamicActor>::AddVerts(vector<PxVec3>(std::begin(wedge_verts), end(wedge_verts)));
+
+			joint = new RevoluteJoint(nullptr, PxTransform(pose.p + PxVec3(-dimensions.x / 2, 0, 0), PxQuat(PxPi / 2, PxVec3(0,0,1))), this, pose);
+		}
+
+		~Paddle()
+		{
+			if (joint != nullptr)
+				delete joint;
 		}
 	};
 }
