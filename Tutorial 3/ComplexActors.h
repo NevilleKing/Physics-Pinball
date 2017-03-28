@@ -144,7 +144,7 @@ namespace PhysicsEngine
 		RevoluteJoint* joint;
 
 	public:
-		Paddle(PxTransform pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(2.0f, 1.0f, 1.0f), PxReal density = 1.f)
+		Paddle(PxTransform pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(2.0f, 1.0f, 1.0f), PxReal density = 1.f, bool leftPaddle = true)
 			:ConvexMesh<DynamicActor>(pose, density)
 		{
 			PxVec3 wedge_verts[] = { PxVec3(dimensions.x, 0.f, -dimensions.z/2), PxVec3(0.f, -dimensions.y/2, -dimensions.z / 2), PxVec3(0.f, dimensions.y/2, -dimensions.z / 2),
@@ -152,13 +152,19 @@ namespace PhysicsEngine
 
 			ConvexMesh<DynamicActor>::AddVerts(vector<PxVec3>(std::begin(wedge_verts), end(wedge_verts)));
 
-			joint = new RevoluteJoint(nullptr, PxTransform(pose.p + PxVec3(-dimensions.x / 2, 0, 0), PxQuat(PxPi / 2, PxVec3(0,0,1))), this, pose);
+			PxReal jointOrient = (leftPaddle ? PxPi / 2 : -PxPi / 2);
+			joint = new RevoluteJoint(nullptr, PxTransform(pose.p, pose.q * PxQuat(-jointOrient, PxVec3(0, 1, 0))), this, PxTransform(PxVec3(0,0,0), PxQuat(-jointOrient, PxVec3(0, 1, 0))));
 		}
 
 		~Paddle()
 		{
 			if (joint != nullptr)
 				delete joint;
+		}
+
+		RevoluteJoint* GetJoint()
+		{
+			return joint;
 		}
 	};
 }

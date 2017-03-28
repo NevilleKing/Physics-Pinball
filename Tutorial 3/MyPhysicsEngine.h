@@ -179,10 +179,13 @@ namespace PhysicsEngine
 			Add(paddles[1]);
 		}
 
+		PxReal val = 0;
+
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-			
+			val += 0.01;
+			paddles[0]->GetJoint()->DriveVelocity(val);
 		}
 
 	};
