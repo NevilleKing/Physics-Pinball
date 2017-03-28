@@ -128,6 +128,8 @@ namespace PhysicsEngine
 		PinballEnclosure* enclosure;
 
 		Paddle* paddles[2];
+
+		Trampoline* plunger;
 		
 	public:
 		//specify your custom filter shader here
@@ -175,6 +177,11 @@ namespace PhysicsEngine
 			// Right
 			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f), 0.1f);
 			Add(paddles[1]);
+
+			// Plunger
+			plunger = new Trampoline(PxTransform(encPose.p + PxVec3(4.75f, -5.1f, 8.4f), encPose.q), PxVec3(0.1f, 0.75f, 0.1f), 50.f, 0.f);
+			plunger->AddToScene(this);
+			
 		}
 
 		//Custom udpate function
