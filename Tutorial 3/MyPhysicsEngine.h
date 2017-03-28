@@ -161,15 +161,22 @@ namespace PhysicsEngine
 			Add(plane);
 
 			// Pinball Enclosure --------------------------
+			PxVec3 encDims = PxVec3(10.f, 20.f, .5f);
 			PxTransform encPose = PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f)));
-			enclosure = new PinballEnclosure(encPose, PxVec3(10.f, 20.f, .5f), .1f);
+			enclosure = new PinballEnclosure(encPose, encDims, .1f);
 			enclosure->Color(color_palette[2], 4);
 			enclosure->AddToScene(this);
 
 			// Paddles ------------------------------------
-			paddles[0] = new Paddle(encPose);
+			// Left
+			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f));
 			paddles[0]->SetKinematic(true);
 			Add(paddles[0]);
+
+			// Right
+			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f));
+			paddles[1]->SetKinematic(true);
+			Add(paddles[1]);
 		}
 
 		//Custom udpate function

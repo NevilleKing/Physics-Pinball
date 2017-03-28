@@ -50,9 +50,13 @@ namespace PhysicsEngine
 		PinballEncSimple *_simpEnclosure;
 		ConvexMesh<StaticActor> *_topRightEntry;
 
+		PxVec3 _dimensions;
+
 	public:
 		PinballEnclosure(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(1.f, 1.f, 1.f), PxReal thickness = 1.f)
 		{
+			_dimensions = dimensions;
+
 			// create the simple stuff
 			_simpEnclosure = new PinballEncSimple(pose, dimensions, thickness);
 
@@ -88,6 +92,11 @@ namespace PhysicsEngine
 		{
 			scene->Add(_simpEnclosure);
 			scene->Add(_topRightEntry);
+		}
+
+		PxVec3 GetDimensions()
+		{
+			return _dimensions;
 		}
 	};
 
