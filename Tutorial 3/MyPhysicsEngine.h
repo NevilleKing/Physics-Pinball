@@ -169,24 +169,22 @@ namespace PhysicsEngine
 
 			// Paddles ------------------------------------
 			// Left
-			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f));
-			//paddles[0]->SetKinematic(true);
+			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f), 0.1f);
 			Add(paddles[0]);
 
 			// Right
-			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f));
-			//paddles[1]->SetKinematic(true);
+			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f), 0.1f);
 			Add(paddles[1]);
 		}
-
-		PxReal val = 0;
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-			val += 0.01;
-			paddles[0]->GetJoint()->DriveVelocity(val);
 		}
 
+		void AddFlipperForce(int flipperID, PxReal force)
+		{
+			paddles[flipperID]->GetJoint()->DriveVelocity(force);
+		}
 	};
 }

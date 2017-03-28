@@ -174,6 +174,12 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 		//implement your own
+		case '\\':
+			scene->AddFlipperForce(0, 10.f); // Add force to left flipper
+			break;
+		case '/':
+			scene->AddFlipperForce(1, 10.f); // Add force to right flipper
+			break;
 		default:
 			break;
 		}
@@ -184,6 +190,12 @@ namespace VisualDebugger
 		switch (toupper(key))
 		{
 		//implement your own
+		case '\\':
+			scene->AddFlipperForce(0, -10.f); // Add force to left flipper
+			break;
+		case '/':
+			scene->AddFlipperForce(1, -10.f); // Add force to right flipper
+			break;
 		default:
 			break;
 		}
