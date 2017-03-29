@@ -82,6 +82,7 @@ namespace PhysicsEngine
 			PxVec3 deathDims(dimensions.x - (dimensions.x / 17), dimensions.y / 20, dimensions.z);
 			_deathTrigger = new Box<StaticActor>(PxTransform(pose.p + PxVec3(-(dimensions.x / 17), -dimensions.y / 2.1f, dimensions.z*32.5f), pose.q), deathDims);
 			_deathTrigger->SetTrigger(true);
+			((PxActor*)_deathTrigger->Get())->setActorFlag(PxActorFlag::eVISUALIZATION, false);
 		}
 
 		~PinballEnclosure()
