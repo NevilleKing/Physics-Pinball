@@ -131,6 +131,8 @@ namespace PhysicsEngine
 
 		PinballBall* ball;
 		
+		PxMaterial* ballMaterial;
+		
 	public:
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
@@ -153,6 +155,10 @@ namespace PhysicsEngine
 			SetVisualisation();
 
 			GetMaterial()->setDynamicFriction(.2f);
+			GetMaterial()->setStaticFriction(0.2f);
+
+			// Ball Material - see http://www.tribology-abc.com/abc/cof.htm & http://hypertextbook.com/facts/2006/restitution.shtml
+			ballMaterial = CreateMaterial(0.5f, 0.2f, 0.597);
 
 			///Initialise and set the customised event callback
 			my_callback = new MySimulationEventCallback();
@@ -214,6 +220,7 @@ namespace PhysicsEngine
 			}
 			ball = new PinballBall(pose, 0.15f);
 			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
+			ball->Material(ballMaterial);
 			Add(ball);
 		}
 
