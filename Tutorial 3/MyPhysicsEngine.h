@@ -17,8 +17,8 @@ namespace PhysicsEngine
 	{
 		enum Enum
 		{
-			ACTOR0		= (1 << 0),
-			ACTOR1		= (1 << 1),
+			BALL		= (1 << 0),
+			PADDLES		= (1 << 1),
 			ACTOR2		= (1 << 2)
 			//add more if you need
 		};
@@ -223,9 +223,10 @@ namespace PhysicsEngine
 				px_scene->removeActor(*(PxActor*)ball->Get());
 				delete ball;
 			}
-			ball = new PinballBall(pose, 0.15f, 0.1f);
+			ball = new PinballBall(pose, 0.15f, 0.01f);
 			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 			ball->Material(ballMaterial);
+			ball->SetupFiltering(FilterGroup::BALL, FilterGroup::PADDLES);
 			Add(ball);
 		}
 
