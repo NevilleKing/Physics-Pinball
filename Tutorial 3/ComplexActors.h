@@ -104,15 +104,15 @@ namespace PhysicsEngine
 	class Trampoline
 	{
 		vector<DistanceJoint*> springs;
-		Box *top;
-		BoxStatic *bottom;
+		Box<DynamicActor> *top;
+		Box<StaticActor> *bottom;
 
 	public:
 		Trampoline(const PxTransform& pose = PxTransform(PxIdentity), const PxVec3& dimensions = PxVec3(1.f, 1.f, 1.f), PxReal stiffness = 1.f, PxReal damping = 1.f)
 		{
 			PxReal thickness = .1f;
-			bottom = new BoxStatic(PxTransform(PxVec3(pose.p.x, pose.p.y + thickness, pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
-			top = new Box(PxTransform(PxVec3(pose.p.x, pose.p.y + (dimensions.y + thickness), pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
+			bottom = new Box<StaticActor>(PxTransform(PxVec3(pose.p.x, pose.p.y + thickness, pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
+			top = new Box<DynamicActor>(PxTransform(PxVec3(pose.p.x, pose.p.y + (dimensions.y + thickness), pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
 			springs.resize(4);
 			springs[0] = new DistanceJoint(bottom, PxTransform(PxVec3(dimensions.x, thickness, dimensions.z)), top, PxTransform(PxVec3(dimensions.x, -dimensions.y, dimensions.z)));
 			springs[1] = new DistanceJoint(bottom, PxTransform(PxVec3(dimensions.x, thickness, -dimensions.z)), top, PxTransform(PxVec3(dimensions.x, -dimensions.y, -dimensions.z)));
