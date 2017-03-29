@@ -52,6 +52,8 @@ namespace PhysicsEngine
 
 		PxVec3 _dimensions;
 
+		Box<StaticActor>* _deathTrigger;
+
 	public:
 		PinballEnclosure(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(1.f, 1.f, 1.f), PxReal thickness = 1.f)
 		{
@@ -75,12 +77,18 @@ namespace PhysicsEngine
 			};
 
 			_topRightEntry = new ConvexMesh<StaticActor>(vector<PxVec3>(begin(topRightVerts), end(topRightVerts)), pose);
+
+			// Add reset trigger at bottom of machine
+			PxVec3 deathDims(dimensions.x - (dimensions.x / 17), dimensions.y / 20, dimensions.z);
+			_deathTrigger = new Box<StaticActor>(PxTransform(pose.p + PxVec3(-(dimensions.x / 17), -dimensions.y / 2.1f, dimensions.z*32.5f), pose.q), deathDims);
+			_deathTrigger->SetTrigger(true);
 		}
 
 		~PinballEnclosure()
 		{
 			delete _simpEnclosure;
 			delete _topRightEntry;
+			delete _deathTrigger;
 		}
 
 		void Color(PxVec3 new_color, PxU32 shape_index)
@@ -92,6 +100,7 @@ namespace PhysicsEngine
 		{
 			scene->Add(_simpEnclosure);
 			scene->Add(_topRightEntry);
+			scene->Add(_deathTrigger);
 		}
 
 		PxVec3 GetDimensions()
