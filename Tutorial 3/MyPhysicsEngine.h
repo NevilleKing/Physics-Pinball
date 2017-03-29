@@ -132,6 +132,7 @@ namespace PhysicsEngine
 		PinballBall* ball;
 		
 		PxMaterial* ballMaterial;
+		PxMaterial* woodMaterial;
 		
 	public:
 		//specify your custom filter shader here
@@ -159,6 +160,7 @@ namespace PhysicsEngine
 
 			// Ball Material - see http://www.tribology-abc.com/abc/cof.htm & http://hypertextbook.com/facts/2006/restitution.shtml
 			ballMaterial = CreateMaterial(0.5f, 0.2f, 0.597);
+			woodMaterial = CreateMaterial(0.0f, 0.0f, 0.597);
 
 			///Initialise and set the customised event callback
 			my_callback = new MySimulationEventCallback();
@@ -173,15 +175,18 @@ namespace PhysicsEngine
 			PxTransform encPose = PxTransform(PxVec3(0.f, 6.2f, -2.8f), PxQuat(-PxPi / 3, PxVec3(1.f, 0.f, 0.f)));
 			enclosure = new PinballEnclosure(encPose, encDims, .1f);
 			enclosure->Color(color_palette[2], 4);
+			enclosure->SetMaterial(woodMaterial);
 			enclosure->AddToScene(this);
 
 			// Paddles ------------------------------------
 			// Left
 			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f), 0.1f);
+			paddles[0]->Material(woodMaterial);
 			Add(paddles[0]);
 
 			// Right
 			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f), 0.1f);
+			paddles[1]->Material(woodMaterial);
 			Add(paddles[1]);
 
 			// Plunger ------------------------------------
@@ -208,7 +213,7 @@ namespace PhysicsEngine
 
 		void AddPlungerForce()
 		{
-			plunger->AddPlungerForce(30.f);
+			plunger->AddPlungerForce(20.f);
 		}
 
 		void CreateBall(const PxTransform& pose)
@@ -218,7 +223,7 @@ namespace PhysicsEngine
 				px_scene->removeActor(*(PxActor*)ball->Get());
 				delete ball;
 			}
-			ball = new PinballBall(pose, 0.15f);
+			ball = new PinballBall(pose, 0.15f, 0.1f);
 			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 			ball->Material(ballMaterial);
 			Add(ball);

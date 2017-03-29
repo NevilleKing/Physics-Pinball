@@ -108,6 +108,12 @@ namespace PhysicsEngine
 		{
 			return _dimensions;
 		}
+
+		void SetMaterial(PxMaterial *material)
+		{
+			_simpEnclosure->Material(material);
+			_topRightEntry->Material(material);
+		}
 	};
 
 	///An example class showing the use of springs (distance joints).
