@@ -104,13 +104,14 @@ namespace PhysicsEngine
 	class Trampoline
 	{
 		vector<DistanceJoint*> springs;
-		Box *bottom, *top;
+		Box *top;
+		BoxStatic *bottom;
 
 	public:
 		Trampoline(const PxTransform& pose = PxTransform(PxIdentity), const PxVec3& dimensions = PxVec3(1.f, 1.f, 1.f), PxReal stiffness = 1.f, PxReal damping = 1.f)
 		{
 			PxReal thickness = .1f;
-			bottom = new Box(PxTransform(PxVec3(pose.p.x, pose.p.y + thickness, pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
+			bottom = new BoxStatic(PxTransform(PxVec3(pose.p.x, pose.p.y + thickness, pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
 			top = new Box(PxTransform(PxVec3(pose.p.x, pose.p.y + (dimensions.y + thickness), pose.p.z), pose.q), PxVec3(dimensions.x, thickness, dimensions.z));
 			springs.resize(4);
 			springs[0] = new DistanceJoint(bottom, PxTransform(PxVec3(dimensions.x, thickness, dimensions.z)), top, PxTransform(PxVec3(dimensions.x, -dimensions.y, dimensions.z)));
@@ -123,9 +124,6 @@ namespace PhysicsEngine
 				springs[i]->Stiffness(stiffness);
 				springs[i]->Damping(damping);
 			}
-
-			// keep it static
-			bottom->SetKinematic(true);
 		}
 
 		void AddToScene(Scene* scene)
@@ -138,6 +136,11 @@ namespace PhysicsEngine
 		{
 			for (unsigned int i = 0; i < springs.size(); i++)
 				delete springs[i];
+		}
+
+		void AddPlungerForce(PxReal force)
+		{
+			((PxRigidDynamic*)top->Get())->addForce(PxVec3(0, force/2, -force));
 		}
 	};
 

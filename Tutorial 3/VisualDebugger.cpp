@@ -196,6 +196,9 @@ namespace VisualDebugger
 		case '/':
 			scene->AddFlipperForce(1, -10.f); // Add force to right flipper
 			break;
+		case ' ':
+			scene->AddPlungerForce();
+			break;
 		default:
 			break;
 		}

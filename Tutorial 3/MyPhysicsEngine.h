@@ -181,7 +181,7 @@ namespace PhysicsEngine
 			Add(paddles[1]);
 
 			// Plunger ------------------------------------
-			plunger = new Trampoline(PxTransform(encPose.p + PxVec3(4.75f, -5.1f, 8.4f), encPose.q), PxVec3(0.1f, 0.75f, 0.1f), 50.f, 0.f);
+			plunger = new Trampoline(PxTransform(encPose.p + PxVec3(4.75f, -5.1f, 8.4f), encPose.q), PxVec3(0.1f, 0.25f, 0.1f), 100.f, 25.f);
 			plunger->AddToScene(this);
 
 			// Ball ---------------------------------------
@@ -198,6 +198,11 @@ namespace PhysicsEngine
 		void AddFlipperForce(int flipperID, PxReal force)
 		{
 			paddles[flipperID]->GetJoint()->DriveVelocity(force);
+		}
+
+		void AddPlungerForce()
+		{
+			plunger->AddPlungerForce(30.f);
 		}
 	};
 }
