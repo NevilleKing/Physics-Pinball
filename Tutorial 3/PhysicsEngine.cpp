@@ -180,7 +180,7 @@ namespace PhysicsEngine
 	void Actor::Name(const string& new_name)
 	{
 		name = new_name;
-		actor->setName(name.c_str());
+		actor->setName(new_name.c_str());
 	}
 
 	string Actor::Name()

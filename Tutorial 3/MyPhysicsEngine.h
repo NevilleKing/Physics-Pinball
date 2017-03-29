@@ -28,12 +28,10 @@ namespace PhysicsEngine
 	class MySimulationEventCallback : public PxSimulationEventCallback
 	{
 	public:
-		//an example variable that will be checked in the main simulation loop
-		bool trigger;
-
 		bool onTouch = false;
+		bool resetTrigger = false;
 
-		MySimulationEventCallback() : trigger(false) {}
+		MySimulationEventCallback(){}
 
 		///Method called when the contact with the trigger object is detected.
 		virtual void onTrigger(PxTriggerPair* pairs, PxU32 count) 
@@ -48,13 +46,13 @@ namespace PhysicsEngine
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 					{
 						cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
-						trigger = true;
+						resetTrigger = true;
 					}
 					//check if eNOTIFY_TOUCH_LOST trigger
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 					{
 						cerr << "onTrigger::eNOTIFY_TOUCH_LOST" << endl;
-						trigger = false;
+						if (resetTrigger) !resetTrigger;
 					}
 				}
 			}
@@ -131,7 +129,7 @@ namespace PhysicsEngine
 
 		Trampoline* plunger;
 
-		Sphere* ball;
+		PinballBall* ball;
 		
 	public:
 		//specify your custom filter shader here
@@ -185,7 +183,7 @@ namespace PhysicsEngine
 			plunger->AddToScene(this);
 
 			// Ball ---------------------------------------
-			ball = new Sphere(PxTransform(encPose.p + PxVec3(4.75f, -3.f, 6.4f)), 0.15f);
+			ball = new PinballBall(PxTransform(encPose.p + PxVec3(4.75f, -3.f, 6.4f)), 0.15f);
 			Add(ball);
 			
 		}
@@ -193,6 +191,9 @@ namespace PhysicsEngine
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
+			// check if the game needs to be reset
+			if (my_callback->resetTrigger)
+				ResetGame();
 		}
 
 		void AddFlipperForce(int flipperID, PxReal force)
@@ -203,6 +204,16 @@ namespace PhysicsEngine
 		void AddPlungerForce()
 		{
 			plunger->AddPlungerForce(30.f);
+		}
+
+		void ResetGame()
+		{
+			my_callback->resetTrigger = false;
+			PxTransform ballPose(ball->initalPose);
+			px_scene->removeActor(*(PxActor*)ball->Get());
+			delete ball;
+			ball = new PinballBall(ballPose, 0.15f);
+			Add(ball);
 		}
 	};
 }

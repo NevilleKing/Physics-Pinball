@@ -33,6 +33,21 @@ namespace PhysicsEngine
 		}
 	};
 
+	class PinballBall : public Sphere
+	{
+	public:
+		PxTransform initalPose;
+
+		//a sphere with default parameters:
+		// - pose in 0,0,0
+		// - dimensions: 1m
+		// - denisty: 1kg/m^3
+		PinballBall(const PxTransform& pose = PxTransform(PxIdentity), PxReal radius = 1.f, PxReal density = 1.f)
+			: Sphere(pose, radius, density), initalPose(pose)
+		{
+		}
+	};
+
 	///Box class
 	template <class F>
 	class Box : public F
