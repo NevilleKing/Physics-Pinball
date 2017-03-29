@@ -183,8 +183,7 @@ namespace PhysicsEngine
 			plunger->AddToScene(this);
 
 			// Ball ---------------------------------------
-			ball = new PinballBall(PxTransform(encPose.p + PxVec3(4.75f, -3.f, 6.4f)), 0.15f);
-			Add(ball);
+			CreateBall(PxTransform(encPose.p + PxVec3(4.75f, -3.f, 6.4f)));
 			
 		}
 
@@ -206,14 +205,23 @@ namespace PhysicsEngine
 			plunger->AddPlungerForce(30.f);
 		}
 
+		void CreateBall(const PxTransform& pose)
+		{
+			if (ball != nullptr)
+			{
+				px_scene->removeActor(*(PxActor*)ball->Get());
+				delete ball;
+			}
+			ball = new PinballBall(pose, 0.15f);
+			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
+			Add(ball);
+		}
+
 		void ResetGame()
 		{
 			my_callback->resetTrigger = false;
 			PxTransform ballPose(ball->initalPose);
-			px_scene->removeActor(*(PxActor*)ball->Get());
-			delete ball;
-			ball = new PinballBall(ballPose, 0.15f);
-			Add(ball);
+			CreateBall(ballPose);
 		}
 	};
 }
