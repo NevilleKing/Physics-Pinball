@@ -194,7 +194,7 @@ namespace PhysicsEngine
 			plunger->AddToScene(this);
 
 			// Ball ---------------------------------------
-			CreateBall(PxTransform(encPose.p + PxVec3(4.75f, -3.f, 6.4f)));
+			CreateBall(PxTransform(encPose.p + PxVec3(4.75f, -3.3f, 6.4f)));
 			
 		}
 

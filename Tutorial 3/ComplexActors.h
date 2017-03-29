@@ -41,6 +41,11 @@ namespace PhysicsEngine
 
 			CreateShape(PxBoxGeometry(PxVec3(dimensions.x / 3, thickness, dimensions.z)));
 			GetShape(7)->setLocalPose(PxTransform(PxVec3(dimensions.x - (dimensions.x / 2.55f), -dimensions.y + (dimensions.y / 3), 0), PxQuat(PxPi / 6, PxVec3(0, 0, 1))));
+
+			// Top "glass" panel to stop ball flying out
+			CreateShape(PxBoxGeometry(PxVec3(dimensions.x, dimensions.y, dimensions.z)));
+			GetShape(8)->setLocalPose(PxTransform(PxVec3(0, 0, dimensions.z*2.2f)));
+			GetShape(8)->setFlag(PxShapeFlag::eVISUALIZATION, false);
 		}
 	};
 

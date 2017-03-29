@@ -305,7 +305,8 @@ namespace VisualDebugger
 					{
 						const PxShape* shape = shapes[j];
 
-						if (shape->getActor()->getActorFlags().isSet(PxActorFlag::eVISUALIZATION))
+						if (shape->getFlags().isSet(PxShapeFlag::eVISUALIZATION) && 
+							shape->getActor()->getActorFlags().isSet(PxActorFlag::eVISUALIZATION))
 						{
 
 							PxTransform pose = PxShapeExt::getGlobalPose(*shape, *shape->getActor());
