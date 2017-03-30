@@ -29,6 +29,11 @@ namespace VisualDebugger
 			content.push_back(line);
 		}
 
+		void EditLine(string line, int line_id)
+		{
+			content[line_id] = line;
+		}
+
 		///Render the screen
 		void Render()
 		{
@@ -70,6 +75,11 @@ namespace VisualDebugger
 
 			screens.push_back(new HUDScreen(screen_id));
 			screens.back()->AddLine(line);
+		}
+
+		void EditLine(int screen_id, string line, int line_id)
+		{
+			screens[screen_id]->EditLine(line, line_id);
 		}
 
 		///Set the active screen

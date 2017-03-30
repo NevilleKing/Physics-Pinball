@@ -34,6 +34,9 @@ namespace PhysicsEngine
 		bool resetTrigger = false;
 		bool scoreTrigger = false;
 		bool additionalScoreAllowed = false;
+		bool hexagonScore = false;
+
+		unsigned int hexScore = 0;
 
 		MySimulationEventCallback(){}
 
@@ -91,8 +94,18 @@ namespace PhysicsEngine
 					//cerr << "onContact::eNOTIFY_TOUCH_FOUND" << endl;
 					if (pairHeader.actors[0]->getName() == "Paddle" || pairHeader.actors[1]->getName() == "Paddle")
 						additionalScoreAllowed = true;
-					if (pairHeader.actors[0]->getName() == "Hexagon" || pairHeader.actors[1]->getName() == "Hexagon")
+					if (pairHeader.actors[0]->getName() == "Hexagon2" || pairHeader.actors[1]->getName() == "Hexagon2")
+					{
 						additionalScoreAllowed = false;
+						hexagonScore = true;
+						hexScore = 10000;
+					}
+					if (pairHeader.actors[0]->getName() == "Hexagon1" || pairHeader.actors[1]->getName() == "Hexagon1")
+					{
+						additionalScoreAllowed = false;
+						hexagonScore = true;
+						hexScore = 20000;
+					}
 				}
 				//check eNOTIFY_TOUCH_LOST
 				if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_LOST)
@@ -161,9 +174,10 @@ namespace PhysicsEngine
 
 		Box<StaticActor>* scoreTrigger;
 
-		int score = 0;
 		
 	public:
+		std::string lastScore = "";
+		unsigned int score = 0;
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
 		MyScene() : Scene(CustomFilterShader) {};
@@ -236,9 +250,9 @@ namespace PhysicsEngine
 			hexagons[0]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
 			hexagons[1]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
 			hexagons[2]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
-			((PxRigidActor*)hexagons[0]->Get())->setName("Hexagon");
-			((PxRigidActor*)hexagons[1]->Get())->setName("Hexagon");
-			((PxRigidActor*)hexagons[2]->Get())->setName("Hexagon");
+			((PxRigidActor*)hexagons[0]->Get())->setName("Hexagon1");
+			((PxRigidActor*)hexagons[1]->Get())->setName("Hexagon2");
+			((PxRigidActor*)hexagons[2]->Get())->setName("Hexagon2");
 			Add(hexagons[0]);
 			Add(hexagons[1]);
 			Add(hexagons[2]);
@@ -262,7 +276,14 @@ namespace PhysicsEngine
 			if (my_callback->scoreTrigger)
 			{
 				my_callback->scoreTrigger = false;
-				cout << "Extra Score" << endl;
+				lastScore = "+30000 Great Shot!";
+				score += 30000;
+			}
+			if (my_callback->hexagonScore)
+			{
+				my_callback->hexagonScore = false;
+				lastScore = "+" + std::to_string(my_callback->hexScore) + " Hexagon!";
+				score += my_callback->hexScore;
 			}
 		}
 
