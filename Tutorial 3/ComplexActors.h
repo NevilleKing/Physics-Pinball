@@ -194,4 +194,37 @@ namespace PhysicsEngine
 			return joint;
 		}
 	};
+
+	class Hexagon : public ConvexMesh<DynamicActor>
+	{
+	public:
+		Hexagon(PxTransform pose = PxTransform(PxIdentity), PxReal sideLength = 1.f, PxReal height = 1.f, PxReal density = 1.f)
+			: ConvexMesh(pose, density)
+		{
+			PxReal s = sideLength;
+			PxReal a = (sqrt(3) * s) / 2;
+			PxReal A = (2 * s) / 2;
+			height /= 2;
+			s /= 2;
+
+			vector<PxVec3> verts{
+				PxVec3(0.f, -A,  height),
+				PxVec3(a,   -s,  height),
+				PxVec3(a,    s,  height),
+				PxVec3(0.f,  A,  height),
+				PxVec3(-a,    s,  height),
+				PxVec3(-a,   -s,  height),
+				PxVec3(0.f, -A, -height),
+				PxVec3(a,   -s, -height),
+				PxVec3(a,    s, -height),
+				PxVec3(0.f,  A, -height),
+				PxVec3(-a,    s, -height),
+				PxVec3(-a,   -s, -height)
+			};
+
+			ConvexMesh::AddVerts(vector<PxVec3>(begin(verts), end(verts)));
+
+			this->SetKinematic(true);
+		}
+	};
 }

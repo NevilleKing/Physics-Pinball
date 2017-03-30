@@ -133,6 +133,8 @@ namespace PhysicsEngine
 		
 		PxMaterial* ballMaterial;
 		PxMaterial* woodMaterial;
+
+		Hexagon* hexagons[3];
 		
 	public:
 		//specify your custom filter shader here
@@ -195,6 +197,14 @@ namespace PhysicsEngine
 
 			// Ball ---------------------------------------
 			CreateBall(PxTransform(encPose.p + PxVec3(4.75f, -3.3f, 6.4f)));
+
+			// Hexagons -----------------------------------
+			hexagons[0] = new Hexagon(encPose, 1.f, encDims.z);
+			hexagons[1] = new Hexagon(PxTransform(encPose.p + PxVec3(-2.7f, -1.65f, 2.8f), encPose.q), 1.f, encDims.z);
+			hexagons[2] = new Hexagon(PxTransform(encPose.p + PxVec3(2.7f, -1.65f, 2.8f), encPose.q), 1.f, encDims.z);
+			Add(hexagons[0]);
+			Add(hexagons[1]);
+			Add(hexagons[2]);
 			
 		}
 
