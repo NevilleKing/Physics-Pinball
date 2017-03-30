@@ -62,6 +62,8 @@ namespace PhysicsEngine
 		Box<StaticActor>* _deathTrigger;
 
 	public:
+		Capsule* _capsules[3];
+
 		PinballEnclosure(const PxTransform& pose = PxTransform(PxIdentity), PxVec3 dimensions = PxVec3(1.f, 1.f, 1.f), PxReal thickness = 1.f)
 		{
 			_dimensions = dimensions;
@@ -94,6 +96,11 @@ namespace PhysicsEngine
 			_deathTrigger->SetTrigger(true);
 			((PxRigidActor*)_deathTrigger->Get())->setName("deathTrigger");
 			((PxActor*)_deathTrigger->Get())->setActorFlag(PxActorFlag::eVISUALIZATION, false);
+
+			// Capsules at top
+			_capsules[0] = new Capsule(PxTransform(pose.p + PxVec3(0, 3, -5), pose.q * PxQuat(PxPi / 2, PxVec3(0, 1, 0))), PxVec2(0.5f, 0.5f));
+			_capsules[1] = new Capsule(PxTransform(pose.p + PxVec3(-3, 2, -4), pose.q * PxQuat(PxPi / 2, PxVec3(0, 1, 0))), PxVec2(0.5f, 0.5f));
+			_capsules[2] = new Capsule(PxTransform(pose.p + PxVec3(3, 2, -4), pose.q * PxQuat(PxPi / 2, PxVec3(0, 1, 0))), PxVec2(0.5f, 0.5f));
 		}
 
 		~PinballEnclosure()
@@ -102,6 +109,9 @@ namespace PhysicsEngine
 			delete _topRightEntry;
 			delete _topLeftEntry;
 			delete _deathTrigger;
+			delete _capsules[0];
+			delete _capsules[1];
+			delete _capsules[2];
 		}
 
 		void Color(PxVec3 new_color, PxU32 shape_index)
@@ -115,6 +125,9 @@ namespace PhysicsEngine
 			scene->Add(_topRightEntry);
 			scene->Add(_topLeftEntry);
 			scene->Add(_deathTrigger);
+			scene->Add(_capsules[0]);
+			scene->Add(_capsules[1]);
+			scene->Add(_capsules[2]);
 		}
 
 		PxVec3 GetDimensions()

@@ -21,7 +21,8 @@ namespace PhysicsEngine
 		{
 			BALL		= (1 << 0),
 			PADDLES		= (1 << 1),
-			HEXAGONS	= (1 << 2)
+			HEXAGONS    = (1 << 2),
+			CAPSULES	= (1 << 3)
 			//add more if you need
 		};
 	};
@@ -35,6 +36,7 @@ namespace PhysicsEngine
 		bool scoreTrigger = false;
 		bool additionalScoreAllowed = false;
 		bool hexagonScore = false;
+		bool capsuleScore = false;
 
 		unsigned int hexScore = 0;
 
@@ -92,7 +94,9 @@ namespace PhysicsEngine
 				if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 				{
 					//cerr << "onContact::eNOTIFY_TOUCH_FOUND" << endl;
-					if (pairHeader.actors[0]->getName() == "Paddle" || pairHeader.actors[1]->getName() == "Paddle")
+					if (pairs[i].shapes[0]->getSimulationFilterData().word0 == FilterGroup::CAPSULES || pairs[i].shapes[1]->getSimulationFilterData().word0 == FilterGroup::CAPSULES)
+						capsuleScore = true;
+					if (pairs[i].shapes[0]->getSimulationFilterData().word0 == FilterGroup::PADDLES || pairs[i].shapes[1]->getSimulationFilterData().word0 == FilterGroup::PADDLES)
 						additionalScoreAllowed = true;
 					if (pairHeader.actors[0]->getName() == "Hexagon2" || pairHeader.actors[1]->getName() == "Hexagon2")
 					{
@@ -225,6 +229,10 @@ namespace PhysicsEngine
 			enclosure->SetMaterial(woodMaterial);
 			enclosure->AddToScene(this);
 
+			enclosure->_capsules[0]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
+			enclosure->_capsules[1]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
+			enclosure->_capsules[2]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
+
 			// Paddles ------------------------------------
 			// Left
 			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f), 0.1f);
@@ -287,6 +295,12 @@ namespace PhysicsEngine
 				lastScore = "+" + std::to_string(my_callback->hexScore) + " Hexagon!";
 				score += my_callback->hexScore;
 			}
+			if (my_callback->capsuleScore)
+			{
+				my_callback->capsuleScore = false;
+				lastScore = "+50000 Capsule Hit!";
+				score += 50000;
+			}
 		}
 
 		void AddFlipperForce(int flipperID, PxReal force)
@@ -310,7 +324,7 @@ namespace PhysicsEngine
 			ball = new PinballBall(pose, 0.15f, 0.01f);
 			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 			ball->Material(ballMaterial);
-			ball->SetupFiltering(FilterGroup::BALL, FilterGroup::PADDLES | FilterGroup::HEXAGONS);
+			ball->SetupFiltering(FilterGroup::BALL, FilterGroup::PADDLES | FilterGroup::HEXAGONS | FilterGroup::CAPSULES);
 			((PxRigidActor*)ball->Get())->setName("Ball");
 			Add(ball);
 		}

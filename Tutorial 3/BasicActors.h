@@ -64,11 +64,11 @@ namespace PhysicsEngine
 		}
 	};
 
-	class Capsule : public DynamicActor
+	class Capsule : public StaticActor
 	{
 	public:
 		Capsule(const PxTransform& pose=PxTransform(PxIdentity), PxVec2 dimensions=PxVec2(1.f,1.f), PxReal density=1.f) 
-			: DynamicActor(pose)
+			: StaticActor(pose)
 		{
 			CreateShape(PxCapsuleGeometry(dimensions.x, dimensions.y), density);
 		}
