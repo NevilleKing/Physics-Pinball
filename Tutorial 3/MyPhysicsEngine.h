@@ -21,7 +21,7 @@ namespace PhysicsEngine
 		{
 			BALL		= (1 << 0),
 			PADDLES		= (1 << 1),
-			ACTOR2		= (1 << 2)
+			HEXAGONS	= (1 << 2)
 			//add more if you need
 		};
 	};
@@ -32,6 +32,8 @@ namespace PhysicsEngine
 	public:
 		bool onTouch = false;
 		bool resetTrigger = false;
+		bool scoreTrigger = false;
+		bool additionalScoreAllowed = false;
 
 		MySimulationEventCallback(){}
 
@@ -47,13 +49,28 @@ namespace PhysicsEngine
 					//check if eNOTIFY_TOUCH_FOUND trigger
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 					{
-						cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
-						resetTrigger = true;
+						//cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
+						string triggerActorName = std::string(pairs[i].triggerActor->getName());
+						string otherActorName = std::string(pairs[i].otherActor->getName());
+
+						if (triggerActorName == "scoreTrigger" && otherActorName == "Ball")
+						{
+							if (additionalScoreAllowed)
+							{
+								scoreTrigger = true;
+								additionalScoreAllowed = false;
+							}
+						}
+
+						if (triggerActorName == "deathTrigger")
+						{
+							resetTrigger = true;
+						}
 					}
 					//check if eNOTIFY_TOUCH_LOST trigger
 					if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 					{
-						cerr << "onTrigger::eNOTIFY_TOUCH_LOST" << endl;
+						//cerr << "onTrigger::eNOTIFY_TOUCH_LOST" << endl;
 						if (resetTrigger) !resetTrigger;
 					}
 				}
@@ -63,7 +80,7 @@ namespace PhysicsEngine
 		///Method called when the contact by the filter shader is detected.
 		virtual void onContact(const PxContactPairHeader &pairHeader, const PxContactPair *pairs, PxU32 nbPairs) 
 		{
-			cerr << "Contact found between " << pairHeader.actors[0]->getName() << " " << pairHeader.actors[1]->getName() << endl;
+			//cerr << "Contact found between " << pairHeader.actors[0]->getName() << " " << pairHeader.actors[1]->getName() << endl;
 
 			//check all pairs
 			for (PxU32 i = 0; i < nbPairs; i++)
@@ -71,12 +88,16 @@ namespace PhysicsEngine
 				//check eNOTIFY_TOUCH_FOUND
 				if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 				{
-					cerr << "onContact::eNOTIFY_TOUCH_FOUND" << endl;
+					//cerr << "onContact::eNOTIFY_TOUCH_FOUND" << endl;
+					if (pairHeader.actors[0]->getName() == "Paddle" || pairHeader.actors[1]->getName() == "Paddle")
+						additionalScoreAllowed = true;
+					if (pairHeader.actors[0]->getName() == "Hexagon" || pairHeader.actors[1]->getName() == "Hexagon")
+						additionalScoreAllowed = false;
 				}
 				//check eNOTIFY_TOUCH_LOST
 				if (pairs[i].events & PxPairFlag::eNOTIFY_TOUCH_LOST)
 				{
-					cerr << "onContact::eNOTIFY_TOUCH_LOST" << endl;
+					//cerr << "onContact::eNOTIFY_TOUCH_LOST" << endl;
 				}
 			}
 		}
@@ -137,6 +158,10 @@ namespace PhysicsEngine
 		PxMaterial* woodMaterial;
 
 		Hexagon* hexagons[3];
+
+		Box<StaticActor>* scoreTrigger;
+
+		int score = 0;
 		
 	public:
 		//specify your custom filter shader here
@@ -188,11 +213,13 @@ namespace PhysicsEngine
 			// Left
 			paddles[0] = new Paddle(PxTransform(encPose.p + PxVec3(-2.08f, -3.75f, 6.58f), encPose.q), PxVec3(1.5f, .3f, .5f), 0.1f);
 			paddles[0]->Material(woodMaterial);
+			paddles[0]->SetupFiltering(FilterGroup::PADDLES, FilterGroup::BALL);
 			Add(paddles[0]);
 
 			// Right
 			paddles[1] = new Paddle(PxTransform(encPose.p + PxVec3(1.53f, -3.75f, 6.58f), encPose.q * PxQuat(PxPi, PxVec3(0, 1, 0))), PxVec3(1.5f, .3f, .5f), 0.1f);
 			paddles[1]->Material(woodMaterial);
+			paddles[1]->SetupFiltering(FilterGroup::PADDLES, FilterGroup::BALL);
 			Add(paddles[1]);
 
 			// Plunger ------------------------------------
@@ -206,9 +233,23 @@ namespace PhysicsEngine
 			hexagons[0] = new Hexagon(encPose, 1.f, encDims.z);
 			hexagons[1] = new Hexagon(PxTransform(encPose.p + PxVec3(-2.7f, -1.65f, 2.8f), encPose.q), 1.f, encDims.z);
 			hexagons[2] = new Hexagon(PxTransform(encPose.p + PxVec3(2.7f, -1.65f, 2.8f), encPose.q), 1.f, encDims.z);
+			hexagons[0]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
+			hexagons[1]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
+			hexagons[2]->SetupFiltering(FilterGroup::HEXAGONS, FilterGroup::BALL);
+			((PxRigidActor*)hexagons[0]->Get())->setName("Hexagon");
+			((PxRigidActor*)hexagons[1]->Get())->setName("Hexagon");
+			((PxRigidActor*)hexagons[2]->Get())->setName("Hexagon");
 			Add(hexagons[0]);
 			Add(hexagons[1]);
 			Add(hexagons[2]);
+
+			// Score Trigger
+			scoreTrigger = new Box<StaticActor>(encPose, PxVec3(encDims.x/2, encDims.y / 15, encDims.z));
+			((PxRigidActor*)scoreTrigger->Get())->setGlobalPose(PxTransform(encPose.p + PxVec3(0, 1.5f, -2.f), encPose.q));
+			((PxRigidActor*)scoreTrigger->Get())->setActorFlag(PxActorFlag::eVISUALIZATION, false);
+			((PxRigidActor*)scoreTrigger->Get())->setName("scoreTrigger");
+			scoreTrigger->SetTrigger(true);
+			Add(scoreTrigger);
 			
 		}
 
@@ -218,6 +259,11 @@ namespace PhysicsEngine
 			// check if the game needs to be reset
 			if (my_callback->resetTrigger)
 				ResetGame();
+			if (my_callback->scoreTrigger)
+			{
+				my_callback->scoreTrigger = false;
+				cout << "Extra Score" << endl;
+			}
 		}
 
 		void AddFlipperForce(int flipperID, PxReal force)
@@ -232,6 +278,7 @@ namespace PhysicsEngine
 
 		void CreateBall(const PxTransform& pose)
 		{
+			my_callback->additionalScoreAllowed = false;
 			if (ball != nullptr)
 			{
 				px_scene->removeActor(*(PxActor*)ball->Get());
@@ -240,7 +287,8 @@ namespace PhysicsEngine
 			ball = new PinballBall(pose, 0.15f, 0.01f);
 			((PxRigidBody*)ball->Get())->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
 			ball->Material(ballMaterial);
-			ball->SetupFiltering(FilterGroup::BALL, FilterGroup::PADDLES);
+			ball->SetupFiltering(FilterGroup::BALL, FilterGroup::PADDLES | FilterGroup::HEXAGONS);
+			((PxRigidActor*)ball->Get())->setName("Ball");
 			Add(ball);
 		}
 

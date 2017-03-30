@@ -92,6 +92,7 @@ namespace PhysicsEngine
 			PxVec3 deathDims(dimensions.x - (dimensions.x / 17), dimensions.y / 20, dimensions.z);
 			_deathTrigger = new Box<StaticActor>(PxTransform(pose.p + PxVec3(-(dimensions.x / 17), -dimensions.y / 2.1f, dimensions.z*32.5f), pose.q), deathDims);
 			_deathTrigger->SetTrigger(true);
+			((PxRigidActor*)_deathTrigger->Get())->setName("deathTrigger");
 			((PxActor*)_deathTrigger->Get())->setActorFlag(PxActorFlag::eVISUALIZATION, false);
 		}
 
@@ -188,6 +189,9 @@ namespace PhysicsEngine
 
 			joint = new RevoluteJoint(nullptr, PxTransform(pose.p, pose.q * PxQuat(-PxPi / 2, PxVec3(0, 1, 0))), this, PxTransform(PxVec3(0,0,0), PxQuat(-PxPi / 2, PxVec3(0, 1, 0))));
 			joint->SetLimits(-PxPi / 6, PxPi / 6);
+
+			((PxRigidActor*)this->Get())->setName("Paddle");
+
 		}
 
 		~Paddle()
