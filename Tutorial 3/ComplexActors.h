@@ -54,6 +54,7 @@ namespace PhysicsEngine
 	private:
 		PinballEncSimple *_simpEnclosure;
 		ConvexMesh<StaticActor> *_topRightEntry;
+		ConvexMesh<StaticActor> *_topLeftEntry;
 
 		PxVec3 _dimensions;
 
@@ -83,6 +84,9 @@ namespace PhysicsEngine
 
 			_topRightEntry = new ConvexMesh<StaticActor>(vector<PxVec3>(begin(topRightVerts), end(topRightVerts)), pose);
 
+			PxTransform TL_pose = PxTransform(pose.p, pose.q * PxQuat(PxPi, PxVec3(0, 1, 0)));
+			_topLeftEntry = new ConvexMesh<StaticActor>(vector<PxVec3>(begin(topRightVerts), end(topRightVerts)), TL_pose);
+
 			// Add reset trigger at bottom of machine
 			PxVec3 deathDims(dimensions.x - (dimensions.x / 17), dimensions.y / 20, dimensions.z);
 			_deathTrigger = new Box<StaticActor>(PxTransform(pose.p + PxVec3(-(dimensions.x / 17), -dimensions.y / 2.1f, dimensions.z*32.5f), pose.q), deathDims);
@@ -94,6 +98,7 @@ namespace PhysicsEngine
 		{
 			delete _simpEnclosure;
 			delete _topRightEntry;
+			delete _topLeftEntry;
 			delete _deathTrigger;
 		}
 
@@ -106,6 +111,7 @@ namespace PhysicsEngine
 		{
 			scene->Add(_simpEnclosure);
 			scene->Add(_topRightEntry);
+			scene->Add(_topLeftEntry);
 			scene->Add(_deathTrigger);
 		}
 
