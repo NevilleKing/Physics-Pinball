@@ -4,6 +4,8 @@
 #include "ComplexActors.h"
 #include <iostream>
 #include <iomanip>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 namespace PhysicsEngine
 {
@@ -155,6 +157,8 @@ namespace PhysicsEngine
 		//Custom scene initialisation
 		virtual void CustomInit()
 		{
+			srand(time(NULL));
+
 			SetVisualisation();
 
 			GetMaterial()->setDynamicFriction(.2f);

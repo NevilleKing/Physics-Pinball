@@ -3,6 +3,7 @@
 #include "PhysicsEngine.h"
 #include <iostream>
 #include <iomanip>
+#include <stdlib.h>     /* srand, rand */
 
 namespace PhysicsEngine
 {
@@ -203,6 +204,10 @@ namespace PhysicsEngine
 
 	class Hexagon : public ConvexMesh<DynamicActor>
 	{
+
+	private:
+		RevoluteJoint* joint;
+
 	public:
 		Hexagon(PxTransform pose = PxTransform(PxIdentity), PxReal sideLength = 1.f, PxReal height = 1.f, PxReal density = 1.f)
 			: ConvexMesh(pose, density)
@@ -228,9 +233,28 @@ namespace PhysicsEngine
 				PxVec3(-a,   -s, -height)
 			};
 
+			int rand1, rand2;
+
+			rand1 = rand() % 10 + 1;
+			rand2 = rand() % 10 + 4;
+
 			ConvexMesh::AddVerts(vector<PxVec3>(begin(verts), end(verts)));
 
-			this->SetKinematic(true);
+			PxReal multiplier = 1.f;
+
+			std::cout << multiplier << std::endl;
+
+			if (rand2  > 5)
+				multiplier = -1.f;
+
+			joint = new RevoluteJoint(nullptr, PxTransform(pose.p, pose.q * PxQuat(multiplier * PxPi / 2, PxVec3(0, 1, 0))), this, PxTransform(PxVec3(0,0,0), PxQuat(multiplier * PxPi / 2, PxVec3(0, 1, 0))));
+			joint->DriveVelocity(rand2);
+		}
+
+		~Hexagon()
+		{
+			if (joint != nullptr)
+				delete joint;
 		}
 	};
 }
