@@ -229,9 +229,15 @@ namespace PhysicsEngine
 			enclosure->SetMaterial(woodMaterial);
 			enclosure->AddToScene(this);
 
+			PxMaterial* capsuleMat = CreateMaterial(0, 0, 1); // very bouncy capsules
+
 			enclosure->_capsules[0]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
 			enclosure->_capsules[1]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
 			enclosure->_capsules[2]->SetupFiltering(FilterGroup::CAPSULES, FilterGroup::BALL);
+
+			enclosure->_capsules[0]->Material(capsuleMat);
+			enclosure->_capsules[1]->Material(capsuleMat);
+			enclosure->_capsules[2]->Material(capsuleMat);
 
 			// Paddles ------------------------------------
 			// Left
