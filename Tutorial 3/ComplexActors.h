@@ -242,8 +242,6 @@ namespace PhysicsEngine
 
 			PxReal multiplier = 1.f;
 
-			std::cout << multiplier << std::endl;
-
 			if (rand2  > 5)
 				multiplier = -1.f;
 
