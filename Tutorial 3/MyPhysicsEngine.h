@@ -178,6 +178,8 @@ namespace PhysicsEngine
 	public:
 		std::string lastScore = "";
 		unsigned int score = 0;
+		int lives = 3;
+
 		//specify your custom filter shader here
 		//PxDefaultSimulationFilterShader by default
 		MyScene() : Scene(CustomFilterShader) {};
@@ -318,6 +320,13 @@ namespace PhysicsEngine
 			my_callback->resetTrigger = false;
 			PxTransform ballPose(ball->initalPose);
 			CreateBall(ballPose);
+			lives--;
+			if (lives < 0)
+			{
+				lives = 3;
+				score = 0;
+				lastScore = "";
+			}
 		}
 	};
 }

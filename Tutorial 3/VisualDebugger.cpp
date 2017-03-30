@@ -117,6 +117,7 @@ namespace VisualDebugger
 		hud.AddLine(PAUSE, "   Simulation paused. Press F10 to continue.");*/
 		hud.AddLine(HUDState::HELP, "Score: 0");
 		hud.AddLine(HUDState::HELP, "");
+		hud.AddLine(HUDState::HELP, "Balls Remaining: 3");
 		//set font size for all screens
 		hud.FontSize(0.018f);
 		//set font color for all screens
@@ -163,6 +164,7 @@ namespace VisualDebugger
 
 		hud.EditLine(0, "Score: " + std::to_string(scene->score), 0);
 		hud.EditLine(0, scene->lastScore, 1);
+		hud.EditLine(0, "Balls Remaining: " + std::to_string(scene->lives), 2);
 
 		//render HUD
 		hud.Render();
